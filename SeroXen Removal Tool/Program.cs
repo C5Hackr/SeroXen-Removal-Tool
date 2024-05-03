@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Collections.Generic;
@@ -82,15 +82,9 @@ namespace SeroXen_Removal_Tool
             {
                 Console.WriteLine("\n[*] One or multiple indicators of compromise were detected");
 
-                if (!args.Contains("--force"))
-                    if (!Confirm("[?] Would you like to attempt to remove SeroXen from your system?", true))
-                        return;
-
                 if (iocs.Contains(IndicatorOfCompromise.Process))
                 {
                     IOCCleaner.CleanProcesses();
-                    Restart(args: "--force");
-                    return;
                 }
 
                 foreach (var ioc in iocs)
@@ -117,18 +111,10 @@ namespace SeroXen_Removal_Tool
 
                 Console.WriteLine("[+] Cleaned up the mess");
 
-                if (ScanIOCs().Length > 0)
-                    if (Confirm("\n[?] Some IOCs were still found. Do you want to rerun this tool just in case?"))
-                    {
-                        Restart(args: "--force");
-                    } else
-                    {
-                        return;
-                    }
-
                 Console.WriteLine("[!] It is recommended to reboot your PC to flush out the rootkit entirely\n");
                 Console.WriteLine("[*] Press any key to exit...");
-            } else
+            }
+            else
             {
                 Console.WriteLine("[+] No indicators of compromise found. Press any key to exit...");
             }
