@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Threading;
 using System.Windows.Forms;
 using static SeroXen_Removal_Tool.Native;
 
@@ -80,7 +81,7 @@ namespace SeroXen_Removal_Tool
 
             if (iocs.Length > 0)
             {
-                Console.WriteLine("\n[*] One or multiple indicators of compromise were detected");
+                Console.WriteLine("\n[*] One or multiple indicators of compromise were detected.");
 
                 if (iocs.Contains(IndicatorOfCompromise.Process))
                 {
@@ -109,9 +110,9 @@ namespace SeroXen_Removal_Tool
                     }
                 }
 
-                Console.WriteLine("[+] Cleaned up the mess");
+                Console.WriteLine("[+] Cleaned up the mess.");
 
-                Console.WriteLine("[!] It is recommended to reboot your PC to flush out the rootkit entirely\n");
+                Console.WriteLine("[!] It is recommended to reboot your PC to flush out the rootkit entirely.\n");
                 Console.WriteLine("[*] Press any key to exit...");
             }
             else
@@ -177,7 +178,7 @@ namespace SeroXen_Removal_Tool
 
             if (IOCDetector.RootkitIOC())
             {
-                Console.WriteLine("[!] SeroXen rootkit detected in memory");
+                Console.WriteLine("[!] SeroXen rootkit detected in memory.");
                 list.Add(IndicatorOfCompromise.Rootkit);
 
                 IOCCleaner.DetachRootkit();
@@ -185,31 +186,31 @@ namespace SeroXen_Removal_Tool
 
             if (IOCDetector.FilesIOC())
             {
-                Console.WriteLine("[!] SeroXen detected in the File System");
+                Console.WriteLine("[!] SeroXen detected in the File System.");
                 list.Add(IndicatorOfCompromise.Files);
             }
 
             if (IOCDetector.ScheduledTaskIOC())
             {
-                Console.WriteLine("[!] SeroXen detected in the Task Scheduler");
+                Console.WriteLine("[!] SeroXen detected in the Task Scheduler.");
                 list.Add(IndicatorOfCompromise.ScheduledTask);
             }
 
             if (IOCDetector.RegistryIOC())
             {
-                Console.WriteLine("[!] SeroXen detected in the Windows Registry");
+                Console.WriteLine("[!] SeroXen detected in the Windows Registry.");
                 list.Add(IndicatorOfCompromise.Registry);
             }
 
             if (IOCDetector.EnvironmentIOC())
             {
-                Console.WriteLine("[!] SeroXen detected in the Environment Variables");
+                Console.WriteLine("[!] SeroXen detected in the Environment Variables.");
                 list.Add(IndicatorOfCompromise.Environment);
             }
 
             if (IOCDetector.ProcessesIOC())
             {
-                Console.WriteLine("[!] SeroXen detected in running processes");
+                Console.WriteLine("[!] SeroXen detected in running processes.");
                 list.Add(IndicatorOfCompromise.Process);
             }
 
@@ -297,13 +298,14 @@ namespace SeroXen_Removal_Tool
 
             foreach (var file in files)
             {
+                Thread.Sleep(1000);
                 try
                 {
                     File.Delete(file);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[-] Failed to delete file {file}: {ex.Message}");
+                    Console.WriteLine($"[-] Failed to delete file {file}: {ex.Message}!");
                 }
             }
         }
@@ -361,7 +363,7 @@ namespace SeroXen_Removal_Tool
 
         public static void DetachRootkit()
         {
-            Console.WriteLine("[*] Reloading ntdll.dll and kernel32.dll to circumvent hooks");
+            Console.WriteLine("[*] Reloading ntdll.dll and kernel32.dll to circumvent hooks...");
 
             Unhook.UnhookDll("ntdll.dll");
             Unhook.UnhookDll("kernel32.dll");
